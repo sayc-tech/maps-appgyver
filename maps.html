@@ -2,34 +2,31 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Mapa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mapa OSM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
-    #map { height: 100vh; }
+    html, body { margin: 0; height: 100%; }
+    #map { width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    document.addEventListener("message", function (event) {
-      const data = JSON.parse(event.data);
-      const grupos = data.grupos;
-      const membros = data.membros;
+    // Posição inicial do mapa (latitude, longitude, zoom)
+    var map = L.map('map').setView([-1.45502, -48.5024], 13); // Belém, PA
 
-      const map = L.map("map").setView([-1.45, -48.49], 13);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    // Camada do mapa (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-      membros.forEach(membro => {
-        const grupo = grupos.find(g => g.id === membro.grupo_id);
-        if (membro.latitude && membro.longitude) {
-          L.marker([membro.latitude, membro.longitude])
-            .addTo(map)
-            .bindPopup(<b>${membro.nome}</b><br>Grupo: ${grupo ? grupo.nome : 'Desconhecido'});
-        }
-      });
-    });
+    // Exemplo: marcador
+    L.marker([-1.45502, -48.5024]).addTo(map)
+      .bindPopup('Você está aqui!')
+      .openPopup();
   </script>
 </body>
 </html>
