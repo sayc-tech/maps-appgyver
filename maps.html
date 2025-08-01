@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mapa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    document.addEventListener("message", function (event) {
+      const data = JSON.parse(event.data);
+      const grupos = data.grupos;
+      const membros = data.membros;
+
+      const map = L.map("map").setView([-1.45, -48.49], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+      membros.forEach(membro => {
+        const grupo = grupos.find(g => g.id === membro.grupo_id);
+        if (membro.latitude && membro.longitude) {
+          L.marker([membro.latitude, membro.longitude])
+            .addTo(map)
+            .bindPopup(<b>${membro.nome}</b><br>Grupo: ${grupo ? grupo.nome : 'Desconhecido'});
+        }
+      });
+    });
+  </script>
+</body>
+</html>
